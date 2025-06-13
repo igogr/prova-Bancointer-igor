@@ -15,14 +15,16 @@ import {
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 
-// DEFININDO AS CORES DO BANCO INTER
+// 1. PALETA DE CORES OFICIAL DO BANCO INTER
 const COLORS = {
-  primary: "#FF7A00", // Laranja Inter
-  background: "#F3F3F3", // Fundo cinza claro
-  surface: "#FFFFFF", // Fundo dos cards
-  text: "#5E5E5E", // Texto principal
-  muted: "#8C8C8C", // Texto secundário
-  green: "#00A96E", // Cor para valores positivos/cotações
+  primary: '#FF7A00',      // Laranja Inter
+  darkGray: '#3C3C3C',     // Textos de maior importância
+  mediumGray: '#5E5E5E',   // Textos secundários (substitui o antigo 'text')
+  lightGray: '#F3F3F3',    // Fundo da tela (substitui o antigo 'background')
+  white: '#FFFFFF',        // Fundo de cards (substitui o antigo 'surface')
+  muted: '#8C8C8C',        // Textos com menos destaque
+  green: '#00A96E',        // Valores positivos, sucesso
+  red: '#E74C3C',          // Erros, alertas
 };
 
 const HomeScreen = () => {
@@ -49,16 +51,6 @@ const HomeScreen = () => {
     fetchCotacoes();
   }, []);
 
-  // Menu de atalhos com ícones do MaterialCommunityIcons (padrão do react-native-paper)
-  const atalhos = [
-    { icon: "swap-horizontal", label: "Área Pix" },
-    { icon: "credit-card-outline", label: "Cartões" },
-    { icon: "chart-line", label: "Investir" },
-    { icon: "barcode-scan", label: "Pagar" },
-    { icon: "arrow-up-bold-box-outline", label: "Depósito" },
-    { icon: "cellphone", label: "Recarga" },
-  ];
-
   const getIcon = (code) => {
     switch (code) {
       case "USD": return "💵";
@@ -75,14 +67,13 @@ const HomeScreen = () => {
         <Avatar.Icon size={48} icon="account-circle-outline" style={styles.avatar} />
         <View style={styles.headerTextContainer}>
           <Text style={styles.helloText}>Olá, {usuario?.nome || "Usuário"}</Text>
-          <Text style={styles.agencyAccountText}>Ag: 0001 | Conta: 1234567-8</Text>
         </View>
         <View style={styles.headerIcons}>
           <TouchableOpacity onPress={() => setSaldoVisivel(!saldoVisivel)}>
-             <Avatar.Icon size={40} icon={saldoVisivel ? "eye-outline" : "eye-off-outline"} style={styles.headerAvatarIcon} />
+              <Avatar.Icon size={40} icon={saldoVisivel ? "eye-outline" : "eye-off-outline"} style={styles.headerAvatarIcon} color={COLORS.mediumGray} />
           </TouchableOpacity>
           <TouchableOpacity onPress={logout} >
-             <Avatar.Icon size={40} icon="logout" style={styles.headerAvatarIcon} />
+              <Avatar.Icon size={40} icon="logout" style={styles.headerAvatarIcon} color={COLORS.mediumGray} />
           </TouchableOpacity>
         </View>
       </View>
@@ -96,16 +87,6 @@ const HomeScreen = () => {
           </Text>
         </Card.Content>
       </Card>
-
-      {/* MENU DE ATALHOS */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.atalhosContainer}>
-        {atalhos.map((item, index) => (
-           <TouchableOpacity key={index} style={styles.atalhoButton}>
-             <Avatar.Icon size={52} icon={item.icon} style={styles.atalhoIcon} color={COLORS.primary} />
-             <Text style={styles.atalhoLabel}>{item.label}</Text>
-           </TouchableOpacity>
-        ))}
-      </ScrollView>
 
       {/* CARD DE COTAÇÕES */}
       <Card style={styles.card}>
@@ -135,84 +116,59 @@ const HomeScreen = () => {
   );
 };
 
-// --- NOVOS ESTILOS ---
+// 2. ESTILOS ATUALIZADOS PARA USAR AS NOVAS CORES
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.lightGray, // Fundo da tela
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: COLORS.surface,
+    backgroundColor: COLORS.white, // Fundo do cabeçalho
   },
   avatar: {
     backgroundColor: 'transparent',
-    borderColor: COLORS.background,
   },
   headerTextContainer: {
      marginLeft: 8,
+     justifyContent: 'center',
+     flex: 1,
   },
   helloText: {
-    fontSize: 16,
-    color: COLORS.text,
-  },
-  agencyAccountText: {
-    fontSize: 14,
-    color: COLORS.primary,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: COLORS.darkGray, // Texto principal
   },
   headerIcons: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 'auto',
   },
   headerAvatarIcon: {
       backgroundColor: 'transparent',
   },
   card: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: COLORS.white, // Fundo do card
     borderRadius: 8,
     marginHorizontal: 16,
     marginTop: 20,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   cardTitle: {
     fontSize: 16,
-    color: COLORS.muted,
+    color: COLORS.muted, // Texto com menos destaque
     marginBottom: 8,
   },
   saldoValue: {
     fontSize: 28,
     fontWeight: "bold",
-    color: COLORS.text,
-  },
-  atalhosContainer: {
-    paddingVertical: 20,
-    paddingLeft: 16,
-  },
-  atalhoButton: {
-    alignItems: 'center',
-    marginRight: 16,
-    width: 80,
-  },
-  atalhoIcon: {
-    backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: '#EFEFEF'
-  },
-  atalhoLabel: {
-    marginTop: 8,
-    fontSize: 13,
-    textAlign: 'center',
-    color: COLORS.text,
-    height: 35, // Garante que textos com 2 linhas tenham o mesmo espaço
+    color: COLORS.darkGray, // Texto do saldo
   },
   infoRow: {
     flexDirection: "row",
@@ -222,17 +178,17 @@ const styles = StyleSheet.create({
   },
   moedaLabel: {
     fontSize: 16,
-    color: COLORS.text,
-    flexShrink: 1, // Permite que o texto quebre a linha se necessário
+    color: COLORS.mediumGray, // Texto secundário
+    flexShrink: 1,
     paddingRight: 8,
   },
   moedaValor: {
     fontSize: 16,
     fontWeight: "bold",
-    color: COLORS.green,
+    color: COLORS.green, // Cor de valorização
   },
   innerDivider: {
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.lightGray, // Cor do divisor igual ao fundo
     height: 1,
   },
 });
